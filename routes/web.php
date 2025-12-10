@@ -3,7 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\ExamController;
+use App\Http\Controllers\Admin\StatsController;
 use App\Http\Controllers\Student\ExamController as StudentExamController;
+use App\Http\Controllers\Student\ResultController as StudentResultController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,6 +29,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/exams/{exam}/attempts/{attempt}', [StudentExamController::class, 'take'])->name('student.exams.take');
     Route::post('/exams/{exam}/attempts/{attempt}', [StudentExamController::class, 'submit'])->name('student.exams.submit');
     Route::get('/exams/{exam}/attempts/{attempt}/result', [StudentExamController::class, 'result'])->name('student.exams.result');
+
+    // Student results
+    Route::get('/results', [StudentResultController::class, 'index'])->name('student.results.index');
+    Route::get('/results/topics', [StudentResultController::class, 'topics'])->name('student.results.topics');
 });
 
 // Admin section
@@ -40,6 +46,9 @@ Route::middleware(['auth', 'admin'])
 
         Route::resource('questions', QuestionController::class)->except(['show']);
         Route::resource('exams', ExamController::class)->except(['show']);
+
+        Route::get('/stats/questions', [StatsController::class, 'questions'])
+            ->name('stats.questions');
     });
 
 require __DIR__.'/auth.php';
