@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\ExamController;
+use App\Http\Controllers\Student\ExamController as StudentExamController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,6 +19,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Student exams
+    Route::get('/exams', [StudentExamController::class, 'index'])->name('student.exams.index');
+    Route::get('/exams/{exam}', [StudentExamController::class, 'show'])->name('student.exams.show');
+    Route::post('/exams/{exam}/start', [StudentExamController::class, 'start'])->name('student.exams.start');
+    Route::get('/exams/{exam}/attempts/{attempt}', [StudentExamController::class, 'take'])->name('student.exams.take');
+    Route::post('/exams/{exam}/attempts/{attempt}', [StudentExamController::class, 'submit'])->name('student.exams.submit');
+    Route::get('/exams/{exam}/attempts/{attempt}/result', [StudentExamController::class, 'result'])->name('student.exams.result');
 });
 
 // Admin section

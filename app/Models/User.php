@@ -46,4 +46,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function examAttempts()
+    {
+        return $this->hasMany(\App\Models\UserExamAttempt::class);
+    }
+
+
 }

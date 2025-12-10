@@ -35,4 +35,11 @@ class Exam extends Model
             ->withPivot('question_order')
             ->orderBy('exam_question.question_order');
     }
+
+    public function attempts()
+    {
+        return $this->hasMany(\App\Models\UserExamAttempt::class);
+    }
+
+
 }
