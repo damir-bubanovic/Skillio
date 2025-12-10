@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\Exam;
 
 class Question extends Model
 {
@@ -29,4 +30,12 @@ class Question extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function exams()
+    {
+        return $this->belongsToMany(Exam::class, 'exam_question')
+            ->withTimestamps()
+            ->withPivot('question_order');
+    }
 }
+

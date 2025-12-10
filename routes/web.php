@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\Admin\ExamController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,6 +30,7 @@ Route::middleware(['auth', 'admin'])
         })->name('dashboard');
 
         Route::resource('questions', QuestionController::class)->except(['show']);
+        Route::resource('exams', ExamController::class)->except(['show']);
     });
 
 require __DIR__.'/auth.php';
