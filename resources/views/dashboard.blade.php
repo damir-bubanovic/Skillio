@@ -1,48 +1,58 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-white leading-tight">
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
 
-    <div class="py-12 bg-gray-100">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Welcome area -->
+        <div class="bg-slate-900 border border-red-700 rounded-xl p-6 shadow-md">
+            <h3 class="text-2xl font-semibold text-red-400 mb-3">
+                Welcome, {{ Auth::user()->name }}
+            </h3>
+            <p class="text-slate-300">
+                This is your dashboard. Use the navigation menu to access exams, results,
+                and other sections of the platform.
+            </p>
+        </div>
 
-                {{-- Available exams --}}
-                <a href="{{ route('student.exams.index') }}"
-                   class="block bg-white overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition-shadow">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold mb-2">Available Exams</h3>
-                        <p class="text-sm text-gray-600">
-                            Browse and start mock exams assigned in Skillio.
-                        </p>
-                    </div>
+        <!-- Quick actions -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <!-- Exams -->
+            <a
+                href="{{ route('student.exams.index') }}"
+                class="bg-slate-900 border border-red-700 rounded-xl p-6 hover:bg-slate-800 transition shadow-md"
+            >
+                <h4 class="text-xl font-semibold text-red-400 mb-2">Exams</h4>
+                <p class="text-slate-300">
+                    View available exams and start practicing.
+                </p>
+            </a>
+
+            <!-- Results -->
+            <a
+                href="{{ route('student.results.index') }}"
+                class="bg-slate-900 border border-red-700 rounded-xl p-6 hover:bg-slate-800 transition shadow-md"
+            >
+                <h4 class="text-xl font-semibold text-red-400 mb-2">Results</h4>
+                <p class="text-slate-300">
+                    Track your performance and see past outcomes.
+                </p>
+            </a>
+
+            <!-- Admin Panel -->
+            @can('admin')
+                <a
+                    href="{{ route('admin.dashboard') }}"
+                    class="bg-slate-900 border border-red-700 rounded-xl p-6 hover:bg-slate-800 transition shadow-md"
+                >
+                    <h4 class="text-xl font-semibold text-red-400 mb-2">Admin Panel</h4>
+                    <p class="text-slate-300">
+                        Manage exams, users, questions, and settings.
+                    </p>
                 </a>
-
-                {{-- My results --}}
-                <a href="{{ route('student.results.index') }}"
-                   class="block bg-white overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition-shadow">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold mb-2">My Results</h3>
-                        <p class="text-sm text-gray-600">
-                            Review all your past attempts with scores and details.
-                        </p>
-                    </div>
-                </a>
-
-                {{-- Topic performance --}}
-                <a href="{{ route('student.results.topics') }}"
-                   class="block bg-white overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition-shadow">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold mb-2">Topic Performance</h3>
-                        <p class="text-sm text-gray-600">
-                            See your strengths and weaknesses by topic/category.
-                        </p>
-                    </div>
-                </a>
-
-            </div>
+            @endcan
         </div>
     </div>
 </x-app-layout>

@@ -1,78 +1,115 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Skillio – Questions</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-100">
-<div class="min-h-screen">
-    <div class="max-w-6xl mx-auto py-8 px-4">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-bold">Questions</h1>
-            <div class="space-x-2">
-                <a href="{{ route('admin.dashboard') }}" class="text-sm underline text-gray-700">Admin dashboard</a>
-                <a href="{{ route('admin.questions.create') }}"
-                   class="inline-flex items-center px-4 py-2 text-sm font-semibold bg-blue-600 text-white rounded shadow">
-                    + New Question
-                </a>
-            </div>
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-white leading-tight">
+            Manage Questions
+        </h2>
+    </x-slot>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+            <p class="text-sm text-slate-400">
+                Create and manage questions used in exams.
+            </p>
+
+            <a
+                href="{{ route('admin.questions.create') }}"
+                class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-sm font-semibold rounded-lg shadow transition"
+            >
+                + Add New Question
+            </a>
         </div>
 
-        @if(session('status'))
-            <div class="mb-4 px-4 py-2 bg-green-100 text-green-800 rounded">
+        @if (session('status'))
+            <div class="mb-4 text-sm text-green-300">
                 {{ session('status') }}
             </div>
         @endif
 
-        @if($questions->isEmpty())
-            <p>No questions yet.</p>
-        @else
-            <div class="bg-white shadow rounded overflow-hidden">
+        <div class="bg-slate-900 border border-red-700 rounded-xl overflow-hidden shadow-md">
+            @if($questions->isEmpty())
+                <div class="p-6">
+                    <p class="text-slate-300">No questions found.</p>
+                </div>
+            @else
                 <table class="min-w-full text-sm">
-                    <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-4 py-2 text-left">ID</th>
-                        <th class="px-4 py-2 text-left">Question</th>
-                        <th class="px-4 py-2 text-left">Category</th>
-                        <th class="px-4 py-2 text-left">Difficulty</th>
-                        <th class="px-4 py-2 text-left">Created</th>
-                        <th class="px-4 py-2 text-right">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($questions as $question)
-                        <tr class="border-t">
-                            <td class="px-4 py-2">{{ $question->id }}</td>
-                            <td class="px-4 py-2 max-w-md truncate">{{ Str::limit($question->question_text, 80) }}</td>
-                            <td class="px-4 py-2">{{ $question->category ?? '-' }}</td>
-                            <td class="px-4 py-2 capitalize">{{ $question->difficulty }}</td>
-                            <td class="px-4 py-2 text-xs text-gray-500">{{ $question->created_at->format('Y-m-d') }}</td>
-                            <td class="px-4 py-2 text-right space-x-2">
-                                <a href="{{ route('admin.questions.edit', $question) }}"
-                                   class="text-blue-600 underline text-xs">Edit</a>
-
-                                <form action="{{ route('admin.questions.destroy', $question) }}"
-                                      method="POST" class="inline"
-                                      onsubmit="return confirm('Delete this question?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 underline text-xs">
-                                        Delete
-                                    </button>
-                                </form>
-                            </td>
+                    <thead class="bg-slate-950/60">
+                        <tr class="text-slate-300">
+                            <th class="px-4 py-3 text-left font-semibold">ID</th>
+                            <th class="px-4 py-3 text-left font-semibold">Question</th>
+                            <th class="px-4 py-3 text-left font-semibold">Category</th>
+                            <th class="px-4 py-3 text-left font-semibold">Correct</th>
+                            <th class="px-4 py-3 text-right font-semibold">Actions</th>
                         </tr>
-                    @endforeach
+                    </thead>
+
+                    <tbody class="divide-y divide-slate-800">
+                        @foreach($questions as $question)
+                            <tr class="text-slate-200 align-top">
+                                <td class="px-4 py-3">
+                                    #{{ $question->id }}
+                                </td>
+
+                                <td class="px-4 py-3">
+                                    <div class="font-semibold text-slate-100">
+                                        {{ \Illuminate\Support\Str::limit($question->question_text, 110) }}
+                                    </div>
+                                    <div class="mt-1 text-xs text-slate-400">
+                                        Options:
+                                        {{ $question->option_a ? 'A' : '' }}
+                                        {{ $question->option_b ? 'B' : '' }}
+                                        {{ $question->option_c ? 'C' : '' }}
+                                        {{ $question->option_d ? 'D' : '' }}
+                                        {{ $question->option_e ? 'E' : '' }}
+                                    </div>
+                                </td>
+
+                                <td class="px-4 py-3 text-slate-300">
+                                    {{ $question->category->name ?? '—' }}
+                                </td>
+
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border border-slate-600 text-slate-200">
+                                        {{ strtoupper($question->correct_option) }}
+                                    </span>
+                                </td>
+
+                                <td class="px-4 py-3 text-right space-x-3 whitespace-nowrap">
+                                    <a
+                                        href="{{ route('admin.questions.edit', $question) }}"
+                                        class="text-red-300 hover:text-red-200 underline"
+                                    >
+                                        Edit
+                                    </a>
+
+                                    <form
+                                        action="{{ route('admin.questions.destroy', $question) }}"
+                                        method="POST"
+                                        class="inline"
+                                        onsubmit="return confirm('Delete this question?');"
+                                    >
+                                        @csrf
+                                        @method('DELETE')
+                                        <button
+                                            type="submit"
+                                            class="text-red-400 hover:text-red-300 underline"
+                                        >
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
-            </div>
+            @endif
+        </div>
 
-            <div class="mt-4">
+        @if(method_exists($questions, 'links'))
+            <div class="mt-6">
                 {{ $questions->links() }}
             </div>
         @endif
+
     </div>
-</div>
-</body>
-</html>
+</x-app-layout>
